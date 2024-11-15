@@ -237,6 +237,7 @@ public class InventarisBarangFrame extends javax.swing.JFrame {
         });
 
         jTextArea1.setColumns(20);
+        jTextArea1.setLineWrap(true);
         jTextArea1.setRows(5);
         jScrollPane2.setViewportView(jTextArea1);
 
@@ -352,23 +353,89 @@ public class InventarisBarangFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        // Handler untuk tombol Simpan
+        try {
+            Barang barang = getBarangFromForm();
+            if (barangService.saveBarang(barang)) {
+                JOptionPane.showMessageDialog(this, "Data berhasil disimpan");
+                loadDataToTable();
+                clearForm();
+            } else {
+                JOptionPane.showMessageDialog(this, "Gagal menyimpan data");
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
+        // Handler untuk tombol Ubah
+        try {
+            Barang barang = getBarangFromForm();
+            if (barangService.updateBarang(barang)) {
+                JOptionPane.showMessageDialog(this, "Data berhasil diubah");
+                loadDataToTable();
+                clearForm();
+            } else {
+                JOptionPane.showMessageDialog(this, "Gagal mengubah data");
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
+        // Handler untuk tombol Hapus
+        try {
+            String kodeBarang = jTextField1.getText().trim();
+            int confirm = JOptionPane.showConfirmDialog(this,
+                    "Apakah anda yakin ingin menghapus data ini?",
+                    "Konfirmasi Hapus",
+                    JOptionPane.YES_NO_OPTION);
+
+            if (confirm == JOptionPane.YES_OPTION) {
+                if (barangService.deleteBarang(kodeBarang)) {
+                    JOptionPane.showMessageDialog(this, "Data berhasil dihapus");
+                    loadDataToTable();
+                    clearForm();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Gagal menghapus data");
+                }
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
+        }
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        // TODO add your handling code here:
+        // Handler untuk tombol Cari
+        try {
+            String kodeBarang = jTextField1.getText().trim();
+            Barang barang = barangService.getBarangByKode(kodeBarang);
+
+            if (barang != null) {
+                jTextField2.setText(barang.getNamaBarang());
+                jDateChooser1.setDate(barang.getTanggalPembelian());
+                jComboBox1.setSelectedItem(barang.getKategori());
+                jComboBox2.setSelectedItem(barang.getKondisi());
+                jTextArea1.setText(barang.getDeskripsi());
+            } else {
+                JOptionPane.showMessageDialog(this, "Data tidak ditemukan");
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
+        }
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        // TODO add your handling code here:
+        int confirm = JOptionPane.showConfirmDialog(this,
+                "Apakah anda yakin ingin keluar?",
+                "Konfirmasi Keluar",
+                JOptionPane.YES_NO_OPTION);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            System.exit(0);
+        }
     }//GEN-LAST:event_jButton6ActionPerformed
 
     public static void main(String args[]) {
