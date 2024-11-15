@@ -191,7 +191,7 @@ public class InventarisBarangFrame extends javax.swing.JFrame {
 
         jLabel4.setText("Nama Barang");
 
-        jLabel5.setText("Tahun Pembelian");
+        jLabel5.setText("Tanggal Pembelian");
 
         jLabel6.setText("Kategori");
 
