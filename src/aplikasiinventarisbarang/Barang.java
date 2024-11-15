@@ -1,29 +1,22 @@
 package aplikasiinventarisbarang;
 
+import java.util.Date;
+
 public class Barang {
     private int id;
     private String kodeBarang;
     private String namaBarang;
-    private String tahunPembelian;
+    private Date tanggalPembelian; // Menggunakan tipe Date
     private String kategori;
     private String kondisi;
     private String deskripsi;
 
-    public Barang(int id, String kodeBarang, String namaBarang, String tahunPembelian, String kategori, String kondisi, String deskripsi) {
+    // Constructor
+    public Barang(int id, String kodeBarang, String namaBarang, Date tanggalPembelian, String kategori, String kondisi, String deskripsi) {
         this.id = id;
         this.kodeBarang = kodeBarang;
         this.namaBarang = namaBarang;
-        this.tahunPembelian = tahunPembelian;
-        this.kategori = kategori;
-        this.kondisi = kondisi;
-        this.deskripsi = deskripsi;
-    }
-
-    // Constructor tanpa id
-    public Barang(String kodeBarang, String namaBarang, String tahunPembelian, String kategori, String kondisi, String deskripsi) {
-        this.kodeBarang = kodeBarang;
-        this.namaBarang = namaBarang;
-        this.tahunPembelian = tahunPembelian;
+        this.tanggalPembelian = tanggalPembelian;
         this.kategori = kategori;
         this.kondisi = kondisi;
         this.deskripsi = deskripsi;
@@ -32,6 +25,10 @@ public class Barang {
     // Getter dan Setter
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getKodeBarang() {
@@ -50,12 +47,12 @@ public class Barang {
         this.namaBarang = namaBarang;
     }
 
-    public String getTahunPembelian() {
-        return tahunPembelian;
+    public Date getTanggalPembelian() {
+        return tanggalPembelian;
     }
 
-    public void setTahunPembelian(String tahunPembelian) {
-        this.tahunPembelian = tahunPembelian;
+    public void setTanggalPembelian(Date tanggalPembelian) {
+        this.tanggalPembelian = tanggalPembelian;
     }
 
     public String getKategori() {
@@ -82,4 +79,3 @@ public class Barang {
         this.deskripsi = deskripsi;
     }
 }
-
