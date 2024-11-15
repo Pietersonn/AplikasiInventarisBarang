@@ -1,9 +1,24 @@
 package aplikasiinventarisbarang;
 
-import javax.swing.table.DefaultTableModel;
-import javax.swing.JOptionPane;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
 
 public class InventarisBarangFrame extends javax.swing.JFrame {
 
@@ -426,43 +441,68 @@ public class InventarisBarangFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        // Handler untuk tombol Cari
-        try {
-            String kodeBarang = jTextField1.getText().trim();
-            Barang barang = barangService.getBarangByKode(kodeBarang);
+        String kodeBarang = jTextField1.getText().trim();
+        String namaBarang = jTextField2.getText().trim();
+        String kategori = (String) jComboBox1.getSelectedItem();
+        String kondisi = (String) jComboBox2.getSelectedItem();
 
-            if (barang != null) {
-                jTextField2.setText(barang.getNamaBarang());
-                jDateChooser1.setDate(barang.getTanggalPembelian());
-                jComboBox1.setSelectedItem(barang.getKategori());
-                jComboBox2.setSelectedItem(barang.getKondisi());
-                jTextArea1.setText(barang.getDeskripsi());
-            } else {
-                JOptionPane.showMessageDialog(this, "Data tidak ditemukan");
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
+        List<Barang> hasil = barangService.cariBarang(kodeBarang, namaBarang, kategori, kondisi);
+
+        // Kosongkan tabel
+        tableModel.setRowCount(0);
+
+        // Isi tabel dengan data hasil pencarian
+        for (Barang barang : hasil) {
+            Object[] row = {
+                barang.getKodeBarang(),
+                barang.getNamaBarang(),
+                barang.getTanggalPembelian(),
+                barang.getKategori(),
+                barang.getKondisi(),
+                barang.getDeskripsi()
+            };
+            tableModel.addRow(row);
         }
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        int confirm = JOptionPane.showConfirmDialog(this,
-                "Apakah anda yakin ingin keluar?",
-                "Konfirmasi Keluar",
-                JOptionPane.YES_NO_OPTION);
 
-        if (confirm == JOptionPane.YES_OPTION) {
-            System.exit(0);
-        }
+
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        ExcelHandler.exportTableToExcel(jTable1, this);
+        try {
+            JFileChooser fileChooser = new JFileChooser();
+            int result = fileChooser.showSaveDialog(this);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File file = fileChooser.getSelectedFile();
+                FileWriter writer = new FileWriter(file + ".csv");
+
+                // Tulis header ke CSV
+                writer.write("Kode Barang,Nama Barang,Tanggal Pembelian,Kategori,Kondisi,Deskripsi\n");
+
+                // Tulis data dari tabel ke CSV
+                for (int i = 0; i < tableModel.getRowCount(); i++) {
+                    StringBuilder row = new StringBuilder();
+                    for (int j = 0; j < tableModel.getColumnCount(); j++) {
+                        row.append(tableModel.getValueAt(i, j));
+                        if (j < tableModel.getColumnCount() - 1) {
+                            row.append(",");
+                        }
+                    }
+                    writer.write(row.toString() + "\n");
+                }
+
+                writer.close();
+                JOptionPane.showMessageDialog(this, "Data berhasil diekspor ke CSV");
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Terjadi kesalahan saat mengekspor data: " + e.getMessage());
+        }
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        ExcelHandler.importExcelToTable(tableModel, this);
-        loadDataToTable();
+
     }//GEN-LAST:event_jButton7ActionPerformed
 
     public static void main(String args[]) {
