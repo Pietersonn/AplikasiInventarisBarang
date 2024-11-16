@@ -1,10 +1,11 @@
 package aplikasiinventarisbarang;
 
-
 import java.util.List;
 import java.util.ArrayList;
 
-
+/**
+ * Kelas layanan yang menangani logika bisnis untuk entitas Barang
+ */
 public class BarangService {
 
     private final BarangDAO barangDAO;
@@ -13,14 +14,23 @@ public class BarangService {
         this.barangDAO = new BarangDAO();
     }
 
+    /**
+     * Mengambil semua data barang
+     */
     public List<Barang> getAllBarang() {
         return barangDAO.getAllBarang();
     }
 
+    /**
+     * Mencari barang berdasarkan kode
+     */
     public Barang getBarangByKode(String kodeBarang) {
         return barangDAO.getBarangByKode(kodeBarang);
     }
 
+    /**
+     * Menyimpan barang baru
+     */
     public boolean saveBarang(Barang barang) {
         if (isValidBarang(barang)) {
             return barangDAO.insertBarang(barang);
@@ -28,6 +38,9 @@ public class BarangService {
         return false;
     }
 
+    /**
+     * Mengupdate data barang
+     */
     public boolean updateBarang(Barang barang) {
         if (isValidBarang(barang)) {
             return barangDAO.updateBarang(barang);
@@ -35,6 +48,9 @@ public class BarangService {
         return false;
     }
 
+    /**
+     * Menghapus barang
+     */
     public boolean deleteBarang(String kodeBarang) {
         if (kodeBarang != null && !kodeBarang.trim().isEmpty()) {
             return barangDAO.deleteBarang(kodeBarang);
@@ -42,6 +58,9 @@ public class BarangService {
         return false;
     }
 
+    /**
+     * Validasi data barang
+     */
     private boolean isValidBarang(Barang barang) {
         return barang != null
                 && barang.getKodeBarang() != null && !barang.getKodeBarang().trim().isEmpty()
@@ -51,6 +70,9 @@ public class BarangService {
                 && barang.getKondisi() != null && !barang.getKondisi().trim().isEmpty();
     }
 
+    /**
+     * Mencari barang berdasarkan beberapa kriteria
+     */
     public List<Barang> cariBarang(String kodeBarang, String namaBarang, String kategori, String kondisi) {
         List<Barang> hasil = new ArrayList<>();
         List<Barang> semuaBarang = getAllBarang();

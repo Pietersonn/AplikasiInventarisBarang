@@ -4,8 +4,16 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Kelas ini menangani operasi database untuk entitas Barang
+ * Mengimplementasikan operasi CRUD (Create, Read, Update, Delete)
+ */
 public class BarangDAO {
     
+    /**
+     * Mengambil semua data barang dari database
+     * @return List dari objek Barang
+     */
     public List<Barang> getAllBarang() {
         List<Barang> listBarang = new ArrayList<>();
         String query = "SELECT * FROM barang";
@@ -25,6 +33,9 @@ public class BarangDAO {
         return listBarang;
     }
     
+    /**
+     * Mencari barang berdasarkan kode
+     */
     public Barang getBarangByKode(String kodeBarang) {
         String query = "SELECT * FROM barang WHERE kode_barang = ?";
         
@@ -43,6 +54,9 @@ public class BarangDAO {
         return null;
     }
     
+    /**
+     * Menyimpan barang baru ke database
+     */
     public boolean insertBarang(Barang barang) {
         String query = "INSERT INTO barang (kode_barang, nama_barang, tanggal_pembelian, " +
                       "kategori, kondisi, deskripsi) VALUES (?, ?, ?, ?, ?, ?)";
@@ -59,6 +73,9 @@ public class BarangDAO {
         }
     }
     
+    /**
+     * Mengupdate data barang yang sudah ada
+     */
     public boolean updateBarang(Barang barang) {
         String query = "UPDATE barang SET nama_barang = ?, tanggal_pembelian = ?, " +
                       "kategori = ?, kondisi = ?, deskripsi = ? WHERE kode_barang = ?";
@@ -81,6 +98,9 @@ public class BarangDAO {
         }
     }
     
+    /**
+     * Menghapus barang dari database
+     */
     public boolean deleteBarang(String kodeBarang) {
         String query = "DELETE FROM barang WHERE kode_barang = ?";
         
@@ -96,6 +116,9 @@ public class BarangDAO {
         }
     }
     
+    /**
+     * Mengkonversi ResultSet ke objek Barang
+     */
     private Barang mapResultSetToBarang(ResultSet rs) throws SQLException {
         return new Barang(
             rs.getString("kode_barang"),
@@ -107,6 +130,9 @@ public class BarangDAO {
         );
     }
     
+    /**
+     * Mengatur parameter PreparedStatement untuk operasi insert
+     */
     private void setStatementParameters(PreparedStatement statement, Barang barang) throws SQLException {
         statement.setString(1, barang.getKodeBarang());
         statement.setString(2, barang.getNamaBarang());

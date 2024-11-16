@@ -1,24 +1,18 @@
 package aplikasiinventarisbarang;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.text.SimpleDateFormat;
+import java.text.ParseException;
+
 
 public class InventarisBarangFrame extends javax.swing.JFrame {
 
@@ -113,6 +107,70 @@ public class InventarisBarangFrame extends javax.swing.JFrame {
 
         return new Barang(kodeBarang, namaBarang, tanggalPembelian,
                 kategori, kondisi, deskripsi);
+    }
+
+    // Method untuk mengimpor data dari file CSV
+    private void importCSV(File file) {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            String line = reader.readLine(); // Skip header
+
+            // Hapus data yang ada di tabel
+            tableModel.setRowCount(0);
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split(",");
+                if (data.length >= 6) {
+                    SimpleDateFormat[] possibleFormats = {
+                        new SimpleDateFormat("yyyy-MM-dd"),
+                        new SimpleDateFormat("MM/dd/yyyy"),
+                        new SimpleDateFormat("dd-MM-yyyy")
+                    };
+
+                    Date tanggalPembelian = null;
+                    for (SimpleDateFormat format : possibleFormats) {
+                        try {
+                            tanggalPembelian = format.parse(data[2]);
+                            break; // Berhenti jika berhasil parse
+                        } catch (ParseException ignored) {
+                            // Abaikan dan coba format berikutnya
+                        }
+                    }
+
+                    if (tanggalPembelian == null) {
+                        throw new Exception("Format tanggal tidak valid: " + data[2]);
+                    }
+
+                    Barang barang = new Barang(
+                            data[0], // kode barang
+                            data[1], // nama barang
+                            tanggalPembelian,
+                            data[3], // kategori
+                            data[4], // kondisi
+                            data[5] // deskripsi
+                    );
+
+                    // Simpan ke database
+                    if (barangService.saveBarang(barang)) {
+                        Object[] row = {
+                            barang.getKodeBarang(),
+                            barang.getNamaBarang(),
+                            barang.getTanggalPembelian(),
+                            barang.getKategori(),
+                            barang.getKondisi(),
+                            barang.getDeskripsi()
+                        };
+                        tableModel.addRow(row);
+                    }
+                }
+            }
+            reader.close();
+            JOptionPane.showMessageDialog(this, "Import data berhasil");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error saat membaca file CSV: " + e.getMessage());
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -502,7 +560,18 @@ public class InventarisBarangFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        try {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("CSV Files", "csv"));
 
+            int result = fileChooser.showOpenDialog(this);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File file = fileChooser.getSelectedFile();
+                importCSV(file);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error saat mengimpor file: " + e.getMessage());
+        }
     }//GEN-LAST:event_jButton7ActionPerformed
 
     public static void main(String args[]) {
