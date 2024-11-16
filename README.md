@@ -165,5 +165,8 @@ CREATE TABLE barang (
 );
 ```
 
+# DEMO
+https://www.youtube.com/watch?v=amwk2zehr20
+
 # Pembuat Aplikasi
  Muhammad Akmal ( 2210010437 ) 
