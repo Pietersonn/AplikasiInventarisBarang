@@ -3,9 +3,7 @@ package aplikasiinventarisbarang;
 import java.util.List;
 import java.util.ArrayList;
 
-/**
- * Kelas layanan yang menangani logika bisnis untuk entitas Barang
- */
+
 public class BarangService {
 
     private final BarangDAO barangDAO;
