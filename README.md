@@ -150,11 +150,6 @@ B001,Laptop Asus,2024-01-01,Elektronik,Baik,Laptop untuk kantor
    - Konfigurasi koneksi database
    - Manajemen koneksi
 
-7. **BarangManagerUI.java**
-   - Interface utama aplikasi
-   - Implementasi JFrame
-   - Manajemen tampilan tabel
-
 
 
 ### Struktur Database
